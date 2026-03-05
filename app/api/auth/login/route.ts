@@ -1,5 +1,5 @@
 import { signToken } from "@/lib/jwt";
-import { User } from "@/lib/models/User";
+import User  from "@/lib/models/User";
 import { connectDB } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
