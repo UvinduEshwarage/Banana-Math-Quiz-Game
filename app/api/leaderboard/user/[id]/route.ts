@@ -14,5 +14,5 @@ export async function GET(
   .sort({createdAt:-1})
 
  return NextResponse.json(games)
-
+ 
 }

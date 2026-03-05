@@ -6,12 +6,18 @@ if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined");
 }
 
-export const signToken = (payload: object) => {
+
+export interface JwtPayload {
+  userId: string;
+  email: string;
+}
+
+export const signToken = (payload: JwtPayload) => {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-export const verifyToken = (token: string) => {
-  return jwt.verify(token, JWT_SECRET);
+export const verifyToken = (token: string): JwtPayload => {
+  return jwt.verify(token, JWT_SECRET) as JwtPayload;
 };

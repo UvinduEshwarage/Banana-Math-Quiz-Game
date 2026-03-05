@@ -18,16 +18,35 @@ const gameScoreSchema = new mongoose.Schema({
   type:Number,
   default:0
  },
+ correctAnswersInRow: 
+ { type: Number, 
+    default: 0 },
 
  level:{
   type:Number,
   default:1
  },
+ status: {
+    type: String,
+    enum: ["active", "finished"],
+    default: "active",
+  },    
+  currentQuestion:{
+  question:{
+    type:String
+  },
+  solution:{
+    type:Number
+  }
+ },
 
  createdAt:{
   type:Date,
   default:Date.now
- }
+ },
+  endedAt: {
+    type: Date,
+  }
 
 })
 
