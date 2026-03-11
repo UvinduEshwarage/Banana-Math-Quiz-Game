@@ -1,21 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/lib/jwt";
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
+  const { pathname } = req.nextUrl;
 
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url), { status: 307 });
+  // Protect dashboard
+  if (pathname.startsWith("/dashboard")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
   }
 
-  try {
-    verifyToken(token);
-    return NextResponse.next();
-  } catch (error) {
-    return NextResponse.redirect(new URL("/login", req.url), { status: 307 });
+  // Prevent logged users from visiting login
+  if (pathname === "/login") {
+    if (token) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"] // protect only dashboard pages
+  matcher: ["/dashboard/:path*", "/login"],
 };
