@@ -4,12 +4,12 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-300 via-gray-400 to-gray-500 font-sans text-white">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black border-x border-gray-200 dark:border-zinc-800 sm:items-start shadow-[0_0_100px_rgba(0,0,0,0.2)]">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-950 font-sans text-white">
+      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-8 bg-gradient-to-t from-gray-900 via-gray-800 to-gray-950 border-x border-gray-700 sm:items-start shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-3xl">
         
-        {/* Logo with grayscale glow and float animation */}
+        {/* Logo with neon glow and float animation */}
         <Image
-          className="rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] animate-float transition-all duration-500 hover:scale-105 hover:grayscale-0 grayscale-[0.2]"
+          className="rounded-3xl shadow-neon animate-float transition-all duration-500 hover:scale-110 hover:shadow-[0_0_30px_rgba(0,255,255,0.7)]"
           src="/apple.jpg"
           alt="Game logo"
           width={500}
@@ -17,21 +17,21 @@ export default function Home() {
         />
 
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          {/* High contrast Black & Ash typography */}
-          <h1 className="max-w-xs text-5xl font-black leading-tight tracking-tighter text-black dark:text-white font-irish">
-            BANANA <span className="text-gray-400">Rush</span> 
+          {/* Neon/Glow typography */}
+          <h1 className="max-w-xs text-5xl font-black leading-tight tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 font-irish">
+            BANANA <span className="text-pink-500">Rush</span>
           </h1>
 
-          {/* 3D Button in Ash/Black theme */}
+          {/* Glowing 3D Button */}
           <Link 
             href="/login" 
-            className="flex h-14 w-full items-center justify-center rounded-xl bg-black dark:bg-white text-white dark:text-black font-bold uppercase tracking-widest shadow-[0_6px_0_0_#4b5563] dark:shadow-[0_6px_0_0_#9ca3af] transition-all hover:translate-y-1 hover:shadow-none md:w-56"
+            className="flex h-14 w-full items-center justify-center rounded-xl bg-gradient-to-r from-purple-700 via-pink-600 to-red-500 text-white font-bold uppercase tracking-widest shadow-neon hover:shadow-[0_0_30px_rgba(255,0,255,0.7)] transition-all hover:scale-105 md:w-56"
           >
             Start now
           </Link>
           
-          {/* Subtitle in Ash for depth */}
-          <p className="text-gray-500 dark:text-gray-400 font-medium text-sm tracking-widest uppercase">
+          {/* Subtitle with subtle glow */}
+          <p className="text-gray-400 font-medium text-sm tracking-widest uppercase drop-shadow-[0_0_4px_rgba(0,255,255,0.7)]">
             Master the numbers
           </p>
         </div>
@@ -44,6 +44,9 @@ export default function Home() {
         }
         .animate-float {
           animation: float 4s ease-in-out infinite;
+        }
+        .shadow-neon {
+          box-shadow: 0 0 20px rgba(0,255,255,0.5), 0 0 40px rgba(0,255,255,0.3);
         }
       `}</style>
     </div>
