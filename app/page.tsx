@@ -19,7 +19,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           {/* High contrast Black & Ash typography */}
           <h1 className="max-w-xs text-5xl font-black leading-tight tracking-tighter text-black dark:text-white font-irish">
-            BANANA <span className="text-gray-400">MATH</span> QUIZ
+            BANANA <span className="text-gray-400">Rush</span> 
           </h1>
 
           {/* 3D Button in Ash/Black theme */}
