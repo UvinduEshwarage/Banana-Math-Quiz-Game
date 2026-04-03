@@ -79,6 +79,13 @@ export default function RegisterPage() {
             />
 
             <button className='bg-gray-600 text-white px-4 py-1 w-full rounded hover:bg-gray-700  '>Register!</button>
+            <button
+              type='button'
+              onClick={() => window.location.href = process.env.NEXT_PUBLIC_GOOGLE_AUTH_URL || '/api/auth/google'}
+              className='mt-3 bg-red-600 text-white px-4 py-1 w-full rounded hover:bg-red-700'
+            >
+              Continue with Google
+            </button>
             <p className='text-sm text-center mt-4'>Already Registered?
             <Link href='/login' className='text-sm text-blue-500'>Log here!</Link>
         </p>

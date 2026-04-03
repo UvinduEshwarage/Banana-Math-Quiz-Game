@@ -20,6 +20,10 @@ export async function POST(req:Request){
             return NextResponse.json({message:"Invalid Credentials"},{status:401});
         }
 
+        if(user.authProvider === 'google'){
+            return NextResponse.json({message:"Please use Google login for this account."},{status:401});
+        }
+
         const isMatch = await bcrypt.compare(password,user.password);
         if(!isMatch){
             return NextResponse.json({message:"Invalid Credentials"},{status:401});

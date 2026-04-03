@@ -8,6 +8,7 @@ export default function LoginPage() {
     
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (e:any)=> {
         
@@ -34,7 +35,7 @@ export default function LoginPage() {
             router.refresh();
             // window.location.href = "/dashboard";
         }else{
-            alert(data.message);
+            setErrorMessage(data.message);
         }
     }
   return (
@@ -42,6 +43,11 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit}
       className='bg-white p-10 w-96 shadow-md text-gray-700'>
       <h1 className='text-xl mb-6 text-center font-irish'>Login here!</h1>
+      {errorMessage && (
+        <div className='mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded'>
+          {errorMessage}
+        </div>
+      )}
       
       <label>Email</label>
       <input
@@ -63,10 +69,17 @@ export default function LoginPage() {
       <button
       className='bg-gray-600 text-white px-4 py-1 w-full rounded hover:bg-gray-700'>
         Login
-        </button>
-        <p className='text-sm text-center mt-4'>Don't have an account?
-            <Link href='/register' className='text-sm text-blue-500'>register here!</Link>
-        </p>
+      </button>
+      <button
+        type='button'
+        onClick={() => window.location.href = process.env.NEXT_PUBLIC_GOOGLE_AUTH_URL || '/api/auth/google'}
+        className='mt-3 bg-red-600 text-white px-4 py-1 w-full rounded hover:bg-red-700'
+      >
+        Continue with Google
+      </button>
+      <p className='text-sm text-center mt-4'>Don't have an account?
+        <Link href='/register' className='text-sm text-blue-500'>register here!</Link>
+      </p>
       </form>
     </div>
   )
