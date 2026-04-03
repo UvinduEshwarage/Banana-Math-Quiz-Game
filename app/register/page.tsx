@@ -14,6 +14,17 @@ export default function RegisterPage() {
     const handleSubmit = async(e:any) => {
         e.preventDefault();
 
+        if (!name || !email || !password) {
+            alert('Please enter name, email, and password.');
+            return;
+        }
+
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            alert('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.');
+            return;
+        }
+
         const res = await fetch('/api/auth/register',{
             method:"POST",
             headers:{

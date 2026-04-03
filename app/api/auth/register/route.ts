@@ -11,6 +11,25 @@ export async function POST(req: Request) {
 
     const { name, email, password } = await req.json();
 
+    // Basic input validation
+    if (!name || !email || !password) {
+      return NextResponse.json(
+        { message: "Name, email and password are required" },
+        { status: 400 }
+      );
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json(
+        {
+          message:
+            "Password must be at least 8 characters, include uppercase, lowercase, number and special character",
+        },
+        { status: 400 }
+      );
+    }
+
     // 1️ Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
