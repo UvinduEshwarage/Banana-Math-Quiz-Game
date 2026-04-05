@@ -4,85 +4,96 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 export default function LoginPage() {
-      const router = useRouter();
-    
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
 
-    const handleSubmit = async (e:any)=> {
-        
-        e.preventDefault();
+  const [email,setEmail] = useState('');
+  const [password,setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-        const res =await fetch('/api/auth/login',{
-            method:"POST",
-            headers:{"Content-Type":"application/json"
-            },
-            credentials:"include",
-            body:JSON.stringify({
-                email,
-                password,
-            })
-        });
+  const handleSubmit = async (e:any)=> {
+    e.preventDefault();
 
-        const data = await res.json();
+    const res = await fetch('/api/auth/login',{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      credentials:"include",
+      body:JSON.stringify({ email, password })
+    });
 
-        console.log("Response:", res.status, data);
+    const data = await res.json();
 
-        if (res.ok){
-            // alert("Login Successfully");
-            router.push("/dashboard");
-            router.refresh();
-            // window.location.href = "/dashboard";
-        }else{
-            setErrorMessage(data.message);
-        }
+    console.log("Response:", res.status, data);
+
+    if (res.ok){
+      router.push("/dashboard");
+      router.refresh();
+    }else{
+      setErrorMessage(data.message);
     }
-  return (
-    <div className='flex justify-center items-center min-h-screen bg-gray-300'>
-      <form onSubmit={handleSubmit}
-      className='bg-white p-10 w-96 shadow-md text-gray-700'>
-      <h1 className='text-xl mb-6 text-center font-irish'>Login here!</h1>
-      {errorMessage && (
-        <div className='mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded'>
-          {errorMessage}
-        </div>
-      )}
-      
-      <label>Email</label>
-      <input
-      type='email'
-      placeholder='Enter Your Email here!'
-      className='border p-2 w-full mb-6'
-      value={email}
-      onChange={(e)=>setEmail(e.target.value)}
-      />
-      <label>Password</label>
-      <input
-      type='password'
-      placeholder='Enter Password here!'
-      className='border p-2 w-full mb-6'
-      value={password}
-      onChange={(e)=>setPassword(e.target.value)}
-      />
+  }
 
-      <button
-      className='bg-gray-600 text-white px-4 py-1 w-full rounded hover:bg-gray-700'>
-        Login
-      </button>
-      <button
-        type='button'
-        onClick={() => window.location.href = process.env.NEXT_PUBLIC_GOOGLE_AUTH_URL || '/api/auth/google'}
-        className='mt-3 bg-red-600 text-white px-4 py-1 w-full rounded hover:bg-red-700'
+  return (
+    <div className='flex justify-center items-center min-h-screen bg-[radial-gradient(circle_at_center,#1a1a2e,#0f0f1a,#000)]'>
+      
+      <form 
+        onSubmit={handleSubmit}
+        className='relative bg-[#111827]/90 backdrop-blur-xl p-10 w-96 border-4 border-yellow-400 rounded-2xl shadow-[0_0_60px_rgba(255,255,0,0.25)] text-yellow-100'
       >
-        Continue with Google
-      </button>
-      <p className='text-sm text-center mt-4'>Don't have an account?
-        <Link href='/register' className='text-sm text-blue-500'>register here!</Link>
-      </p>
+        
+        {/* Glow border effect */}
+        <div className="absolute inset-0 rounded-2xl border-2 border-yellow-300 opacity-20 animate-pulse pointer-events-none"></div>
+
+        <h1 className='text-2xl mb-6 text-center font-extrabold text-yellow-300 drop-shadow-[2px_2px_0px_#000]'>
+          🎮 Login Here!
+        </h1>
+
+        {errorMessage && (
+          <div className='mb-4 p-3 bg-red-500/20 border border-red-500 text-red-300 rounded text-sm'>
+            {errorMessage}
+          </div>
+        )}
+
+        <label className='text-sm uppercase tracking-widest'>Email</label>
+        <input
+          type='email'
+          placeholder='Enter Your Email here!'
+          className='border-2 border-yellow-400 bg-black/40 p-2 w-full mb-6 rounded text-white focus:outline-none focus:ring-2 focus:ring-yellow-300'
+          value={email}
+          onChange={(e)=>setEmail(e.target.value)}
+        />
+
+        <label className='text-sm uppercase tracking-widest'>Password</label>
+        <input
+          type='password'
+          placeholder='Enter Password here!'
+          className='border-2 border-yellow-400 bg-black/40 p-2 w-full mb-6 rounded text-white focus:outline-none focus:ring-2 focus:ring-yellow-300'
+          value={password}
+          onChange={(e)=>setPassword(e.target.value)}
+        />
+
+        {/* Login Button */}
+        <button
+          className='w-full h-11 rounded-xl bg-linear-to-b from-yellow-400 to-yellow-600 text-black font-extrabold uppercase tracking-wider shadow-[0_6px_0_#b45309] transition-all active:translate-y-[4px] active:shadow-[0_2px_0_#b45309] hover:scale-105'
+        >
+          🚀 Login
+        </button>
+
+        {/* Google Button */}
+        <button
+          type='button'
+          onClick={() => window.location.href = process.env.NEXT_PUBLIC_GOOGLE_AUTH_URL || '/api/auth/google'}
+          className='mt-3 w-full h-11 rounded-xl bg-linear-to-b from-red-500 to-red-700 text-white font-bold tracking-wide shadow-[0_6px_0_#7f1d1d] transition-all active:translate-y-[4px] active:shadow-[0_2px_0_#7f1d1d] hover:scale-105'
+        >
+          Continue with Google
+        </button>
+
+        <p className='text-sm text-center mt-4 text-yellow-200'>
+          Don't have an account?{" "}
+          <Link href='/register' className='text-pink-400 hover:underline'>
+            register here!
+          </Link>
+        </p>
       </form>
     </div>
   )
 }
-
-

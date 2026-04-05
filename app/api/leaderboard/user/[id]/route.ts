@@ -1,36 +1,30 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import GameScore from "@/lib/models/GameScore";
-import mongoose from "mongoose";
 import User from "@/lib/models/User";
 
-export async function GET(req: Request, context: { params: Promise<{ id: string }> }) {
+export async function GET() {
   try {
     await connectDB();
 
-    // unwrap the params promise
-    const { id } = await context.params;
+    const leaderboard = await GameScore.find()
+      .sort({ score: -1 })
+      .limit(10)
+      .populate("userId", "name") // populate user's name
+      .select("score level userId");
 
-    // cast id to ObjectId
-    const userId = new mongoose.Types.ObjectId(id);
-
-    const games = await GameScore.find({ userId })
-      .sort({ createdAt: -1 })
-      .populate("userId", "name")
-      .select("score level createdAt");
-
-    const formattedGames = games.map((game) => ({
-      name: game.userId?.name || "Unknown",
-      score: game.score,
-      level: game.level,
-      playedAt: game.createdAt,
+    // Safe transformation to avoid null userId
+    const formattedLeaderboard = leaderboard.map(item => ({
+      name: item.userId?.name || "Unknown Player", // <-- key fix
+      score: item.score,
+      level: item.level
     }));
 
-    return NextResponse.json(formattedGames);
+    return NextResponse.json(formattedLeaderboard);
   } catch (error) {
-    console.error("Error fetching user games:", error);
+    console.error("Leaderboard API error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch user games" },
+      { error: "Failed to fetch leaderboard" },
       { status: 500 }
     );
   }

@@ -8,31 +8,24 @@ export default function GamePage() {
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [loading, setLoading] = useState(false);
   
-  // Timer State
   const [timeLeft, setTimeLeft] = useState(30);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const maxLives = 5;
 
-  /**
-   * LOGIC: Dynamic Time Calculation
-   * Level 1: 30s | Level 2: 25s | Level 3: 20s | Level 4: 15s | Level 5+: 15s
-   */
   const getAllowedTime = (level: number) => {
     if (level === 1) return 30;
     if (level === 2) return 25;
     if (level === 3) return 20;
-    return 15; // Cap at 15 seconds for Level 4 and above
+    return 15;
   };
 
-  // Effect to handle the countdown interval
   useEffect(() => {
-    // Only start timer if we have gameData and a question
     if (gameData && question) {
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            handleTimeOut(); // Trigger life loss on 0
+            handleTimeOut();
             return 0;
           }
           return prev - 1;
@@ -40,7 +33,6 @@ export default function GamePage() {
       }, 1000);
     }
 
-    // Cleanup: Clear timer when component unmounts or question changes
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
@@ -61,7 +53,6 @@ export default function GamePage() {
     setQuestion(data.question);
     setGameData((prev: any) => ({ ...prev, ...data }));
     
-    // Reset timer based on current level
     setTimeLeft(getAllowedTime(currentLevel || 1));
     setLoading(false);
   };
@@ -73,14 +64,11 @@ export default function GamePage() {
       method: "POST",
       body: JSON.stringify({ gameId: gameData.gameId }),
     });
+
     alert(`Game Over! Final Score: ${finalScore}`);
     window.location.reload(); 
   };
 
-  /**
-   * LOGIC: Handle Timeout
-   * This is called when the timer hits 0. It treats it like a wrong answer.
-   */
   const handleTimeOut = async () => {
     if (timerRef.current) clearInterval(timerRef.current);
     
@@ -91,7 +79,6 @@ export default function GamePage() {
     if (newWrongCount >= maxLives) {
       await endGame(gameData.score);
     } else {
-      // Fetch next question even if they timed out
       fetchQuestion(gameData.level);
     }
   };
@@ -99,7 +86,6 @@ export default function GamePage() {
   const handleSubmit = async () => {
     if (!answer || !gameData) return;
     
-    // Stop timer immediately upon submission to prevent timeout triggering while fetching
     if (timerRef.current) clearInterval(timerRef.current);
 
     const res = await fetch("/api/game/submit", {
@@ -119,74 +105,94 @@ export default function GamePage() {
 
     setGameData((prev: any) => ({ ...prev, ...result }));
     setAnswer("");
-    // Fetch next question and pass the new level from result to reset timer correctly
     fetchQuestion(result.level);
   };
 
   const renderStars = () => {
     const livesRemaining = Math.max(0, maxLives - wrongAnswers);
     return (
-      <div className="flex text-3xl text-black">
-        {"★".repeat(livesRemaining)}
-        <span className="text-gray-400">{"☆".repeat(wrongAnswers)}</span>
+      <div className="flex text-3xl">
+        <span className="text-yellow-400 drop-shadow-[0_0_6px_rgba(255,255,0,0.7)]">
+          {"★".repeat(livesRemaining)}
+        </span>
+        <span className="text-gray-600">
+          {"☆".repeat(wrongAnswers)}
+        </span>
       </div>
     );
   };
 
   if (!gameData) {
     return (
-      <div className="bg-gray-100 h-80 w-full flex items-center justify-center rounded-sm">
+      <div className="flex items-center justify-center min-h-screen bg-[radial-gradient(circle_at_center,#1a1a2e,#0f0f1a,#000)]">
         <button 
           onClick={startGame}
-          className="bg-gray-300 border-2 text-black hover:bg-gray-200 border-black px-8 py-2 text-2xl font-irish shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+          className="rounded-xl bg-linear-to-b from-yellow-400 to-yellow-600 text-black font-extrabold px-10 py-3 text-2xl shadow-[0_6px_0_#b45309] transition-all active:translate-y-[4px] active:shadow-[0_2px_0_#b45309] hover:scale-105"
         >
-          {loading ? "Loading..." : "Start.."}
+          {loading ? "Loading..." : "🎮 Start"}
         </button>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center mb-4">
-        <span className="text-2xl font-irish text-black">Level : {gameData.level}</span>
+    <div className="flex flex-col min-h-screen p-6 bg-[radial-gradient(circle_at_center,#1a1a2e,#0f0f1a,#000)] text-yellow-100">
+
+      {/* HUD Top */}
+      <div className="flex justify-between items-center mb-6 border-b-2 border-yellow-400 pb-3">
+        <span className="text-2xl font-extrabold text-yellow-300 drop-shadow-[2px_2px_0px_#000]">
+          Level : {gameData.level}
+        </span>
         {renderStars()}
       </div>
 
-      <div className="bg-gray-400 aspect-video w-full flex items-center justify-center overflow-hidden rounded-sm border-2 border-gray-500 shadow-inner relative">
+      {/* Question Display */}
+      <div className="flex-1 flex items-center justify-center bg-black/40 border-4 border-yellow-400 rounded-2xl shadow-inner relative">
         {question ? (
-          <img src={question.question} alt="Quiz" className="max-h-full object-contain p-2" />
+          <img src={question.question} alt="Quiz" className="max-h-full object-contain p-4" />
         ) : (
-          <div className="animate-pulse text-white">Loading Question...</div>
+          <div className="animate-pulse text-yellow-300">Loading Question...</div>
         )}
       </div>
 
-      <div className="flex justify-between text-black items-end mt-6">
+      {/* Bottom Panel */}
+      <div className="flex justify-between items-end mt-6">
+
+        {/* Answer Section */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-bold">Your Answer:</label>
+          <label className="text-sm uppercase tracking-widest">Your Answer:</label>
           <div className="flex gap-2">
             <input
               type="number"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              className="w-24 p-2 border-2 border-black text-black rounded shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] outline-none"
+              className="w-24 p-2 border-2 border-yellow-400 bg-black/40 text-white rounded outline-none focus:ring-2 focus:ring-yellow-300"
               placeholder="?"
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
             <button 
               onClick={handleSubmit}
-              className="bg-white border-2 border-black text-black hover:bg-gray-200 px-4 py-1 font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
+              className="rounded-lg bg-linear-to-b from-yellow-400 to-yellow-600 text-black font-bold px-4 shadow-[0_4px_0_#b45309] active:translate-y-[3px] active:shadow-[0_1px_0_#b45309]"
             >
               OK
             </button>
           </div>
         </div>
+
+        {/* Score + Timer */}
         <div className="flex flex-col items-end">
-          <span className="text-xl font-irish italic">Score: {gameData.score}</span>
-          <span className={`text-2xl font-bold ${timeLeft <= 5 ? 'text-red-600 animate-bounce' : 'text-black'}`}>
-            Time : {timeLeft} s
+          <span className="text-xl font-bold text-yellow-300">
+            Score: {gameData.score}
+          </span>
+          <span className={`text-2xl font-extrabold ${
+            timeLeft <= 5 
+              ? 'text-red-500 animate-bounce' 
+              : 'text-yellow-200'
+          }`}>
+            ⏱ {timeLeft}s
           </span>
         </div>
+
       </div>
     </div>
   );
