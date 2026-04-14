@@ -19,7 +19,7 @@ export async function GET() {
 
     // 3️⃣ Transform to clean JSON output
     const formattedLeaderboard = leaderboard.map(item => ({
-      name: item.userId.name,
+      name: item.userId?.name || "Unknown Player",
       score: item.score,
       level: item.level,
     }));
